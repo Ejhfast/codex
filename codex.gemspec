@@ -8,6 +8,6 @@ Gem::Specification.new do |s|
   s.email       = 'ejhfast@gmail.com'
   s.files       = ["lib/normalize_ast.rb", "lib/data_node.rb", "lib/codex.rb"]
   s.homepage    =
-    'http://rubygems.org/gems/normalize_ast'
+    'http://rubygems.org/gems/ruby-codex'
   s.license       = 'MIT'
 end
