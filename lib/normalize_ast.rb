@@ -105,8 +105,3 @@ class ASTProcess
   end
 end
 
-# str = IO.read(ARGV[0])
-# ast = Parser::CurrentRuby.parse(str)
-# modified = ASTNormalizer.new.rewrite_ast(ast)
-# puts Unparser.unparse(modified)
-
