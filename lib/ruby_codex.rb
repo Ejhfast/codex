@@ -83,14 +83,13 @@ class Codex
         query_count = query.nil? ? 0 : query.count
         blocks = db.where(:type => keys[:type], :func => keys[:func]).sum(:count)
         rets = db.where(:type => keys[:type], :ret_val => keys[:ret_val]).sum(:count)
-        if query_count <= 0
-          { :keys => keys,
-            :message => 
-              "We've seen #{keys[:func]} blocks returning #{keys[:ret_val]} only #{query_count.to_s} " +
-              "times, though we've seen #{keys[:func]} blocks #{blocks.to_s} times and #{keys[:ret_val]} " +
-              "returned #{rets.to_s} times."
-          } if blocks > 0 && rets > 0
-        end
+        { :keys => keys,
+          :message => 
+            "We've seen #{keys[:func]} blocks returning the #{keys[:ret_val]} type #{query_count.to_s} " +
+            "times, and we've seen #{keys[:func]} blocks #{blocks.to_s} times and #{keys[:ret_val]} " +
+            "returned #{rets.to_s} times.",
+          :unlikely => Proc.new { |gt,bt = 0,rt = 0| query_count < gt && blocks > bt && rets > rt}
+        }
       }
     )
 
@@ -111,9 +110,10 @@ class Codex
         alt_count = func.nil? ? 0 : func.count
         { :keys => keys,
           :message =>
-            "Function call #{keys[:norm_code]} has appeared #{query_count.to_s} times, but " +
-            "#{func.norm_code} has appeared #{alt_count.to_s} times."
-        } if alt_count > 10 * (query_count + 1)
+            "Function call #{keys[:norm_code]} has appeared #{query_count.to_s} times, and the most " +
+            "common alternative #{func.norm_code} has appeared #{alt_count.to_s} times.",
+          :unlikely => Proc.new { |t| alt_count > t * (query_count + 1)}
+        }
       }
     )
 
@@ -132,15 +132,15 @@ class Codex
       combine,
       Proc.new do |db,keys,data|
         query = db.where(keys).first
-        if query.nil? || query.count <= 0
-          fs = [:f1,:f2].map { |f| db.where(:type => "send", :func => keys[f]).size }
-          { :keys => keys, 
-            :message => 
-              "Function #{keys[:f1]} has appeared #{fs[0].to_s} times " +
-              "and #{keys[:f2]} has appeared #{fs[1].to_s} times, but " +
-              "they haven't appeared together."
-          } unless fs[0] <= 0 || fs[1] <= 0
-        end
+        query_count = query.nil? ? 0 : query.count
+        fs = [:f1,:f2].map { |f| db.where(:type => "send", :func => keys[f]).size }
+        { :keys => keys, 
+          :message => 
+            "Function #{keys[:f1]} has appeared #{fs[0].to_s} times " +
+            "and #{keys[:f2]} has appeared #{fs[1].to_s} times, and " +
+            "they've appeared #{query_count} times together.",
+          :unlikely => Proc.new { |gt, t| query_count < gt && fs[0] > t && fs[1] > t }
+        }
       end
     )
 
@@ -177,16 +177,15 @@ class Codex
         if query
           types = query.ident_types.select { |k,v| ["str","int","float","array","hash"].include? k }
           types.default = 0
-          pp types
-          first, second = types.sort_by{ |k,v| v*-1 }.take(2)
-          if (first && second.nil?) || (first[1] > 10 * (second[1] + 1))
-            { :keys => keys,
-              :message => 
-                "The identifier #{keys[:ident]} has appeared #{first[1].to_s} " +
-                "times as #{first[0].to_s}, but only #{types[data[:ident_type]].to_s} " +
-                "times as #{data[:ident_type].to_s}" 
-            } unless first[0].to_s == data[:ident_type]
-          end
+          best = types.select { |k,v| k != data[:ident_type] }.sort_by{ |k,v| v*-1 }.first
+          { :keys => keys,
+            :message => 
+              "The identifier #{keys[:ident]} has appeared #{types[data[:ident_type]].to_s} " +
+              "times as #{data[:ident_type].to_s} and #{best[1].to_s} times as #{best[0].to_s}", 
+            :unlikely => Proc.new { |t| best[1] > t * (types[keys[:ident_type]] + 1) }
+          }
+        else
+          { :message => "Never Seen", :unlikely => Proc.new { false } }
         end
       }
     )
