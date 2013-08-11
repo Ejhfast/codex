@@ -2,10 +2,10 @@ load 'data_node.rb'
 
 class Codex
   
-  attr_accessor :block, :func, :func_chain, :cond, :ident
-  
-  def initialize(db,agg_db)
+  attr_reader :nodes
     
+  def initialize(db,agg_db)
+    @nodes = {}
     # helper procs
     info = Proc.new do |node|
       normal_node(node) do |n, norm|
@@ -52,7 +52,7 @@ class Codex
       :func_info => Proc.new { |v| v.first[:func_info] }
     }
 
-    @block = DataNode.new(
+    @nodes[:block] = DataNode.new(
       db, agg_db,
       Proc.new { |x| x.type == :block}, 
       key.merge({ 
@@ -88,12 +88,12 @@ class Codex
             "We've seen #{keys[:func]} blocks returning the #{keys[:ret_val]} type #{query_count.to_s} " +
             "times, and we've seen #{keys[:func]} blocks #{blocks.to_s} times and #{keys[:ret_val]} " +
             "returned #{rets.to_s} times.",
-          :unlikely => Proc.new { |gt,bt = 0,rt = 0| query_count < gt && blocks > bt && rets > rt}
+          :unlikely => Proc.new { |gt=1,bt = 0,rt = 0| query_count < gt && blocks > bt && rets > rt}
         }
       }
     )
 
-    @func = DataNode.new(
+    @nodes[:func] = DataNode.new(
       db, agg_db,
       Proc.new { |x| x.type == :send}, 
       key.merge({ 
@@ -112,12 +112,12 @@ class Codex
           :message =>
             "Function call #{keys[:norm_code]} has appeared #{query_count.to_s} times, and the most " +
             "common alternative #{func.norm_code} has appeared #{alt_count.to_s} times.",
-          :unlikely => Proc.new { |t| alt_count > t * (query_count + 1)}
+          :unlikely => Proc.new { |t=10| alt_count > t * (query_count + 1)}
         }
       }
     )
 
-    @func_chain = func = DataNode.new(
+    @nodes[:func_chain] = DataNode.new(
       db, agg_db,
       Proc.new { |x| x.type == :send && type.call(x.children.first) == "send" }, 
       key.merge({ 
@@ -139,12 +139,12 @@ class Codex
             "Function #{keys[:f1]} has appeared #{fs[0].to_s} times " +
             "and #{keys[:f2]} has appeared #{fs[1].to_s} times, and " +
             "they've appeared #{query_count} times together.",
-          :unlikely => Proc.new { |gt, t| query_count < gt && fs[0] > t && fs[1] > t }
+          :unlikely => Proc.new { |gt=1, t=10| query_count < gt && fs[0] > t && fs[1] > t }
         }
       end
     )
 
-    @cond = DataNode.new(
+    @nodes[:cond] = DataNode.new(
       db, agg_db,
       Proc.new { |x| x.type == :if },
       key.merge({
@@ -157,7 +157,7 @@ class Codex
       combine
     )
 
-    @ident = DataNode.new(
+    @nodes[:ident] = DataNode.new(
       db, agg_db,
       Proc.new { |x| [:lvasgn, :ivasgn, :cvasgn, :gvasgn].include?(x.type) },
       key.merge({
@@ -182,7 +182,7 @@ class Codex
             :message => 
               "The identifier #{keys[:ident]} has appeared #{types[data[:ident_type]].to_s} " +
               "times as #{data[:ident_type].to_s} and #{best[1].to_s} times as #{best[0].to_s}", 
-            :unlikely => Proc.new { |t| best[1] > t * (types[keys[:ident_type]] + 1) }
+            :unlikely => Proc.new { |t=5| best[1] > t * (types[keys[:ident_type]] + 1) }
           }
         else
           { :message => "Never Seen", :unlikely => Proc.new { false } }
@@ -190,6 +190,34 @@ class Codex
       }
     )
   end
+  
+  def add_ast(ast, file, project, &block)
+    @nodes.each do |k,v|
+      v.add_ast(ast, file, project, &block) 
+    end
+  end
+  
+  def save_all!
+    @nodes.each do |k,v|
+      v.save!
+    end
+  end
+  
+  def query(ast)
+    @nodes.each do |k,v|
+      yield k, v.query(ast)
+    end
+  end
+  
+  def is_unlikely(ast, options = Hash.new([]))
+    unlikely = []
+    query(ast) do |k, message|
+      if message && message[:unlikely].call(*options[k])
+        unlikely.push(message)
+      end
+    end
+    unlikely
+  end   
   
   def without_caller(node) 
     node.updated(nil, node.children.map.with_index do |x,i|
