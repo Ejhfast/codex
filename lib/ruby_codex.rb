@@ -179,7 +179,7 @@ class Codex
           types.default = 0
           pp types
           first, second = types.sort_by{ |k,v| v*-1 }.take(2)
-          if first[1] > 10 * (second[1] + 1)
+          if (first && second.nil?) || (first[1] > 10 * (second[1] + 1))
             { :keys => keys,
               :message => 
                 "The identifier #{keys[:ident]} has appeared #{first[1].to_s} " +
