@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'ruby_codex'
-  s.version     = '0.0.4'
+  s.version     = '0.0.6'
   s.date        = '2013-07-31'
   s.summary     = "Analyze ruby ASTs with Codex"
   s.description = "A DSL for collecting and aggregating data on Ruby ASTs"
