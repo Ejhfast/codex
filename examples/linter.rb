@@ -16,9 +16,9 @@ line_count = 0
 
 files.each_with_index do |target, i|
   src = IO.read(target)
-  line_count += src.split("\n").count
   ast = Parser::CurrentRuby.parse(src) rescue nil
   next if ast.nil?
+  line_count += src.split("\n").count
   messages = Set.new
   codex.tree_walk(ast) do |node|
     q = codex.is_unlikely(node)
