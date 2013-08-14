@@ -29,8 +29,6 @@ class Codex
 
     key = {
       :type => type,
-      :info => info,
-      :func_info => func_info
     }
 
     data_core = {
@@ -86,7 +84,7 @@ class Codex
             "We've seen #{keys[:func]} blocks returning the #{keys[:ret_val]} type #{query_count.to_s} " +
             "times, and we've seen #{keys[:func]} blocks #{blocks.to_s} times and #{keys[:ret_val]} " +
             "returned #{rets.to_s} times.",
-          :unlikely => Proc.new { |gt=1,bt = 5,rt = 5| query_count < gt && blocks > bt && rets > rt}
+          :unlikely => Proc.new { |gt=1,bt=5,rt=5| query_count < gt && blocks > bt && rets > rt}
         }
       }
     )
@@ -96,36 +94,34 @@ class Codex
       Proc.new { |x| x.type == :send}, 
       key.merge({ 
         :func => Proc.new { |x| func_name.call(x) },
-        :norm_code => Proc.new { |x| normal_node(x) { |x| Unparser.unparse(without_caller(x)) rescue nil } },
         :sig => Proc.new { |x| x.children.drop(2).map { |y| type.call(y) } },
+      }),
+      data_core.merge({
         :info => Proc.new { |x| info.call(without_caller(x)) },
         :func_info => Proc.new { |x| func_info.call(without_caller(x)) }
       }),
-      data_core,
       combine,
-      Proc.new { |db,keys,values| 
-        if keys[:norm_code] != nil # Hack for binary operators that disappear
-          query = db.where(keys).first
-          query_count = query.nil? ? 0 : query.count
-          func = db.where(:type => keys[:type], :func => keys[:func]).sort(:count => -1).limit(1).first
-          alt_text = 
-            if func
-              alt_count = func.count 
-              "and the most common alternative #{func.norm_code} has appeared #{alt_count.to_s} times."
-            else
-              alt_count = 0
-              "and we've seen no known alternative."
-            end
-          { :keys => keys,
-            :message =>
-              "Function call #{keys[:norm_code]} has appeared #{query_count.to_s} times, " +
-              alt_text,
-            :unlikely => Proc.new { |t=10| alt_count > t * (query_count + 1)}
-          }
-        else
-          { :message => "Never Seen", :unlikely => Proc.new { false } }
-        end
-      }
+      Proc.new do |db,keys,values| 
+        query = db.where( :type => keys[:type], :func => keys[:func], :sig => keys[:sig]).first
+        query_count = query.nil? ? 0 : query.count
+        func = db.where(:type => keys[:type], :func => keys[:func], :sig => {:$ne => keys[:sig]}).sort(:count => -1).limit(1).first
+        alt_text = 
+          if func
+            alt_count = func.count 
+            "and the most common alternative #{func.func}:#{func.sig.join(",")} has appeared #{alt_count.to_s} times."
+          else
+            alt_count = 0
+            "and we've seen no known alternative."
+          end
+        { :keys => keys,
+          :message =>
+            "Function call #{keys[:func]}:#{keys[:sig].join(",")} has appeared #{query_count.to_s} times, " +
+            alt_text,
+          :unlikely => Proc.new do |ac=5,t=1024| 
+            query_count == 0 && alt_count >= ac || alt_count >= t * (query_count + 1)
+          end
+        }
+      end
     )
 
     @nodes[:func_chain] = DataNode.new(
@@ -135,8 +131,6 @@ class Codex
         :type => Proc.new { "func_chain" },
         :f1 => Proc.new { |x| func_name.call(x) },
         :f2 => Proc.new { |x| func_name.call(x.children.first) },
-        :info => Proc.new { 0 },
-        :func_info => Proc.new { 0 }
       }),
       data_core,
       combine,
@@ -162,6 +156,8 @@ class Codex
         :cond => Proc.new { |x| normal_node(x) { |n| Unparser.unparse(n.children.first) }},
         :iftrue => Proc.new { |x| normal_node(x) { |n| Unparser.unparse(n.children[1]) }},
         :iffalse => Proc.new { |x| normal_node(x) { |n| Unparser.unparse(n.children[2]) }},
+        :info => info,
+        :func_info => func_info
       }),
       data_core,
       combine
@@ -173,8 +169,6 @@ class Codex
       key.merge({
         :type => Proc.new { "ident" },
         :ident => Proc.new { |x| x.children.first.to_s },
-        :info => Proc.new { 0 },
-        :func_info => Proc.new { 0 }
       }),
       data_core.merge({
         :ident_type => Proc.new { |x| type.call(x.children[1]) rescue nil }
@@ -194,7 +188,13 @@ class Codex
             :message => 
               "The identifier #{keys[:ident]} has appeared #{types[data[:ident_type]].to_s} " +
               "times as #{data[:ident_type].to_s} and #{best_str}", 
-            :unlikely => Proc.new { |t=5| best ? best[1] > t * (types[keys[:ident_type]] + 1) : false }
+              :unlikely => Proc.new do |ac=5,t=8| 
+                if best
+                  types[keys[:ident_type]] == 0 && best[1] >= ac || best[1] >= t * (types[keys[:ident_type]] + 1)
+                else
+                  false
+                end
+              end
           }
         else
           { :message => "Never Seen", :unlikely => Proc.new { false } }
