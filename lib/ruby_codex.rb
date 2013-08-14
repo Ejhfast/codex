@@ -96,7 +96,7 @@ class Codex
       Proc.new { |x| x.type == :send}, 
       key.merge({ 
         :func => Proc.new { |x| func_name.call(x) },
-        :norm_code => Proc.new { |x| normal_node(x) { |x| Unparser.unparse(without_caller(x)) rescue nil } },
+        #:norm_code => Proc.new { |x| normal_node(x) { |x| Unparser.unparse(without_caller(x)) rescue nil } },
         :sig => Proc.new { |x| x.children.drop(2).map { |y| type.call(y) } },
         :info => Proc.new { |x| info.call(without_caller(x)) },
         :func_info => Proc.new { |x| func_info.call(without_caller(x)) }
@@ -104,27 +104,27 @@ class Codex
       data_core,
       combine,
       Proc.new { |db,keys,values| 
-        if keys[:norm_code] != nil # Hack for binary operators that disappear
-          query = db.where(keys).first
+        #if keys[:norm_code] != nil # Hack for binary operators that disappear
+          query = db.where( :type => keys[:type], :func => keys[:func], :sig => keys[:sig]).first
           query_count = query.nil? ? 0 : query.count
-          func = db.where(:type => keys[:type], :func => keys[:func]).sort(:count => -1).limit(1).first
+          func = db.where(:type => keys[:type], :func => keys[:func], :sig => {:$ne => keys[:sig]}).sort(:count => -1).limit(1).first
           alt_text = 
             if func
               alt_count = func.count 
-              "and the most common alternative #{func.norm_code} has appeared #{alt_count.to_s} times."
+              "and the most common alternative #{func.func}:#{func.sig.join(",")} has appeared #{alt_count.to_s} times."
             else
               alt_count = 0
               "and we've seen no known alternative."
             end
           { :keys => keys,
             :message =>
-              "Function call #{keys[:norm_code]} has appeared #{query_count.to_s} times, " +
+              "Function call #{keys[:func]}:#{keys[:sig].join(",")} has appeared #{query_count.to_s} times, " +
               alt_text,
-            :unlikely => Proc.new { |t=10| alt_count > t * (query_count + 1)}
+            :unlikely => Proc.new { |ac=5,t=1024| query_count == 0 && alt_count >= ac || alt_count >= t * (query_count + 1)}
           }
-        else
-          { :message => "Never Seen", :unlikely => Proc.new { false } }
-        end
+        #else
+        #  { :message => "Never Seen", :unlikely => Proc.new { false } }
+        #end
       }
     )
 
@@ -194,7 +194,7 @@ class Codex
             :message => 
               "The identifier #{keys[:ident]} has appeared #{types[data[:ident_type]].to_s} " +
               "times as #{data[:ident_type].to_s} and #{best_str}", 
-            :unlikely => Proc.new { |t=5| best ? best[1] > t * (types[keys[:ident_type]] + 1) : false }
+            :unlikely => Proc.new { |ac=5,t=8| best ? types[keys[:ident_type]] == 0 && best[1] >= ac || best[1] >= t * (types[keys[:ident_type]] + 1) : false }
           }
         else
           { :message => "Never Seen", :unlikely => Proc.new { false } }
