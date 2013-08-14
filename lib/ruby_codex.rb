@@ -137,7 +137,7 @@ class Codex
       Proc.new do |db,keys,data|
         query = db.where(keys).first
         query_count = query.nil? ? 0 : query.count
-        fs = [:f1,:f2].map { |f| db.where(:type => "send", :func => keys[f]).size }
+        fs = [:f1,:f2].map { |f| db.where(:type => "send", :func => keys[f]).sum(:count) }
         { :keys => keys, 
           :message => 
             "Function #{keys[:f1]} has appeared #{fs[0].to_s} times " +
