@@ -14,3 +14,9 @@ class String
 end
 
 $codex = Codex.new(ASTNodes, ASTStats)
+
+map = "function(){ emit(
+          {func:this.func}},
+          {amount: this.#{sum_field.to_s}}
+        );
+      };"
