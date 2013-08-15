@@ -177,9 +177,10 @@ class Codex
         :ident_types => Proc.new { |v| v.group_by { |y| y[:ident_type] }.map_hash { |x| x.size } }
       }),
       Proc.new { |db, keys, data|
+        #pp keys
         primatives = ["str","int","float","array","hash"]
         query = db.where(keys).first
-        if query && primatives.include?(keys[:ident_type])
+        if query && primatives.include?(data[:ident_type])
           types = query.ident_types.select { |k,v| primatives.include? k }
           types.default = 0
           best = types.select { |k,v| k != data[:ident_type] }.sort_by{ |k,v| v*-1 }.first
@@ -190,7 +191,7 @@ class Codex
               "times as #{data[:ident_type].to_s} and #{best_str}", 
               :unlikely => Proc.new do |ac=5,t=8| 
                 if best
-                  types[keys[:ident_type]] == 0 && best[1] >= ac || best[1] >= t * (types[keys[:ident_type]] + 1)
+                  (types[keys[:ident_type]] == 0 && best[1] >= ac) || (best[1] >= t * (types[keys[:ident_type]] + 1))
                 else
                   false
                 end
