@@ -95,6 +95,11 @@ class Codex
       key.merge({ 
         :func => Proc.new { |x| func_name.call(x) },
         :sig => Proc.new { |x| x.children.drop(2).map { |y| type.call(y) } },
+        :norm_code => Proc.new do |x| 
+          name = func_name.call(x)
+          sig = x.children.drop(2).map { |y| type.call(y) }.join(",")
+          "#{name}(#{sig})"
+        end
       }),
       data_core.merge({
         :info => Proc.new { |x| info.call(without_caller(x)) },
@@ -131,6 +136,11 @@ class Codex
         :type => Proc.new { "func_chain" },
         :f1 => Proc.new { |x| func_name.call(x) },
         :f2 => Proc.new { |x| func_name.call(x.children.first) },
+        :norm_code => Proc.new do |x|
+          f1 = func_name.call(x)
+          f2 = func_name.call(x.children.first)
+          "#{f1}.#{f2}"
+        end
       }),
       data_core,
       combine,
@@ -169,6 +179,7 @@ class Codex
       key.merge({
         :type => Proc.new { "ident" },
         :ident => Proc.new { |x| x.children.first.to_s },
+        :norm_code => Proc.new { |x| x.children.first.to_s + " ="}
       }),
       data_core.merge({
         :ident_type => Proc.new { |x| type.call(x.children[1]) rescue nil }
