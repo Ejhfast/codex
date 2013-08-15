@@ -1,0 +1,247 @@
+ser@ChrUbuntu:~/Documents/summer/codex/examples$ ruby linter2.rb testSet/
+Function << has appeared 6086 times and values has appeared 177 times, and they've appeared 0 times together.
+Function to_json has appeared 66 times and attributes has appeared 165 times, and they've appeared 0 times together.
+Function call sub!:str,send has appeared 0 times, and the most common alternative sub!:regexp,str has appeared 61 times.
+Function + has appeared 5658 times and chomp has appeared 114 times, and they've appeared 0 times together.
+Function chomp has appeared 114 times and to_json has appeared 66 times, and they've appeared 0 times together.
+File 0: 5 / 67
+Current % recommended: 0.0746
+ bFunction get has appeared 197 times and class has appeared 1707 times, and they've appeared 0 times together.
+File 1: 1 / 192
+Function select has appeared 223 times and find_all has appeared 64 times, and they've appeared 0 times together.
+We've seen detect blocks returning the or type 0 times, and we've seen detect blocks 153 times and or returned 122 times.
+File 2: 2 / 42
+
+File 3: 0 / 30
+Function call request:lvar,str,lvar has appeared 0 times, and the most common alternative request: has appeared 133 times.
+Function call use_ssl=:begin has appeared 0 times, and the most common alternative use_ssl=:true has appeared 8 times.
+File 4: 2 / 39
+Function sum has appeared 36 times and points has appeared 15 times, and they've appeared 0 times together.
+File 5: 1 / 38
+Function to_i has appeared 876 times and tr has appeared 63 times, and they've appeared 0 times together.
+File 6: 1 / 115
+Function username has appeared 16 times and config has appeared 557 times, and they've appeared 0 times together.
+Function password has appeared 84 times and config has appeared 557 times, and they've appeared 0 times together.
+File 7: 2 / 127
+
+File 8: 0 / 114
+Current % recommended: 0.0183
+
+File 9: 0 / 234
+Function each_with_index has appeared 198 times and rows has appeared 54 times, and they've appeared 0 times together.
+File 10: 1 / 67
+
+File 11: 0 / 3
+Function columns has appeared 71 times and class has appeared 1707 times, and they've appeared 0 times together.
+File 12: 1 / 108
+Function =~ has appeared 1355 times and gsub has appeared 803 times, and they've appeared 0 times together.
+Function downcase has appeared 351 times and title has appeared 39 times, and they've appeared 0 times together.
+File 13: 2 / 21
+
+File 14: 0 / 3
+
+File 15: 0 / 25
+
+File 16: 0 / 5
+Current % recommended: 0.0146
+Function call build:splat has appeared 0 times, and the most common alternative build:sym has appeared 72 times.
+File 17: 1 / 83
+
+File 18: 0 / 93
+Function render has appeared 219 times and helpers has appeared 11 times, and they've appeared 0 times together.
+File 19: 1 / 17
+
+File 20: 0 / 15
+
+File 21: 0 / 20
+
+File 22: 0 / 47
+
+File 23: 0 / 42
+Function call get_attribute:sym has appeared 0 times, and the most common alternative get_attribute:str has appeared 10 times.
+Function html_safe has appeared 94 times and indent has appeared 71 times, and they've appeared 0 times together.
+Function call indent:send,send,send has appeared 0 times, and the most common alternative indent: has appeared 27 times.
+Function any? has appeared 358 times and attributes has appeared 165 times, and they've appeared 0 times together.
+Function to_s has appeared 3314 times and attributes has appeared 165 times, and they've appeared 0 times together.
+Function singular has appeared 120 times and model_name has appeared 19 times, and they've appeared 0 times together.
+File 24: 6 / 184
+Current % recommended: 0.015
+
+File 25: 0 / 31
+
+File 26: 0 / 35
+
+File 27: 0 / 113
+
+File 28: 0 / 22
+Function downcase has appeared 351 times and demodulize has appeared 27 times, and they've appeared 0 times together.
+Function respond_to? has appeared 1549 times and helpers has appeared 11 times, and they've appeared 0 times together.
+Function send has appeared 1026 times and helpers has appeared 11 times, and they've appeared 0 times together.
+File 29: 3 / 182
+
+File 30: 0 / 13
+
+File 31: 0 / 5
+Function call match:str,hash has appeared 0 times, and the most common alternative match:regexp has appeared 82 times.
+Function call resource:sym,hash has appeared 0 times, and the most common alternative resource: has appeared 66 times.
+Function call resource:sym has appeared 0 times, and the most common alternative resource: has appeared 66 times.
+Function call resources:sym,hash has appeared 0 times, and the most common alternative resources: has appeared 5 times.
+Function call delete:sym,hash has appeared 0 times, and the most common alternative delete:sym has appeared 422 times.
+Function call get:hash has appeared 0 times, and the most common alternative get:lvar has appeared 54 times.
+Function call post:hash has appeared 0 times, and the most common alternative post:str has appeared 12 times.
+File 32: 7 / 69
+Current % recommended: 0.0164
+Function call join:str,str,str,str has appeared 0 times, and the most common alternative join:str has appeared 1176 times.
+Function [] has appeared 20837 times and YAML.load_file has appeared 20 times, and they've appeared 0 times together.
+Function call YAML.load_file:dstr has appeared 0 times, and the most common alternative YAML.load_file:lvar has appeared 12 times.
+File 33: 3 / 62
+
+File 34: 0 / 34
+
+File 35: 0 / 58
+
+File 36: 0 / 35
+We've seen map! blocks returning the gsub type 0 times, and we've seen map! blocks 118 times and gsub returned 28 times.
+File 37: 1 / 8
+Function delete_if has appeared 76 times and uniq has appeared 139 times, and they've appeared 0 times together.
+Function to_s has appeared 3314 times and content has appeared 43 times, and they've appeared 0 times together.
+Function username has appeared 16 times and user has appeared 234 times, and they've appeared 0 times together.
+Function include? has appeared 1121 times and to_a has appeared 378 times, and they've appeared 0 times together.
+Function slice has appeared 115 times and content has appeared 43 times, and they've appeared 0 times together.
+File 38: 5 / 71
+
+File 39: 0 / 7
+Function call desc:sym has appeared 0 times, and the most common alternative desc:str has appeared 17 times.
+Function call del:send has appeared 0 times, and the most common alternative del:str has appeared 5 times.
+File 40: 2 / 58
+Current % recommended: 0.0185
+Function call User.find:lvar has appeared 0 times, and the most common alternative User.find:send has appeared 29 times.
+File 41: 1 / 7
+Function call reply: has appeared 0 times, and the most common alternative reply:lvar has appeared 5 times.
+Function [] has appeared 20837 times and content has appeared 43 times, and they've appeared 0 times together.
+File 42: 2 / 21
+
+File 43: 0 / 34
+
+File 44: 0 / 7
+
+File 45: 0 / 9
+
+File 46: 0 / 16
+Function call scope:sym,block has appeared 0 times, and the most common alternative scope: has appeared 41 times.
+Function call write_attribute:sym,send has appeared 0 times, and the most common alternative write_attribute:lvar,lvar has appeared 7 times.
+Function call update:hash,hash has appeared 0 times, and the most common alternative update:lvar has appeared 81 times.
+Function update has appeared 258 times and collection has appeared 74 times, and they've appeared 0 times together.
+File 47: 4 / 122
+Function call validates_presence_of:sym,hash has appeared 0 times, and the most common alternative validates_presence_of:sym has appeared 15 times.
+Function call validate:sym,sym,sym has appeared 0 times, and the most common alternative validate: has appeared 12 times.
+Function include? has appeared 1121 times and to_a has appeared 378 times, and they've appeared 0 times together.
+Function call update:hash,hash has appeared 0 times, and the most common alternative update:lvar has appeared 81 times.
+Function update has appeared 258 times and collection has appeared 74 times, and they've appeared 0 times together.
+Function map has appeared 2029 times and slice has appeared 115 times, and they've appeared 0 times together.
+Function count has appeared 138 times and where has appeared 64 times, and they've appeared 0 times together.
+Function < has appeared 936 times and Time.now has appeared 335 times, and they've appeared 0 times together.
+Function present? has appeared 77 times and password has appeared 84 times, and they've appeared 0 times together.
+Function == has appeared 5874 times and password has appeared 84 times, and they've appeared 0 times together.
+Function call add:sym,send has appeared 0 times, and the most common alternative add:send has appeared 92 times.
+Function call I18n.t:str has appeared 0 times, and the most common alternative I18n.t:sym,hash has appeared 5 times.
+Function blank? has appeared 295 times and password has appeared 84 times, and they've appeared 0 times together.
+File 48: 13 / 274
+Current % recommended: 0.0222
+Function call ago: has appeared 0 times, and the most common alternative ago:lvar has appeared 6 times.
+Function call link_to:send,send,hash has appeared 0 times, and the most common alternative link_to:str,const has appeared 6 times.
+File 49: 2 / 36
+Function call t:str has appeared 0 times, and the most common alternative t: has appeared 20 times.
+Function call url_for:hash has appeared 0 times, and the most common alternative url_for:lvar has appeared 11 times.
+File 50: 2 / 13
+
+File 51: 0 / 5
+Function call I18n.t:str has appeared 0 times, and the most common alternative I18n.t:sym,hash has appeared 5 times.
+File 52: 1 / 36
+Function call I18n.t:str has appeared 0 times, and the most common alternative I18n.t:sym,hash has appeared 5 times.
+File 53: 1 / 17
+Function call I18n.t:str has appeared 0 times, and the most common alternative I18n.t:sym,hash has appeared 5 times.
+File 54: 1 / 19
+Function call respond_to:sym,sym,hash has appeared 0 times, and the most common alternative respond_to: has appeared 28 times.
+Function save has appeared 105 times and current_user has appeared 43 times, and they've appeared 0 times together.
+Function errors has appeared 125 times and current_user has appeared 43 times, and they've appeared 0 times together.
+Function call url_for:hash has appeared 0 times, and the most common alternative url_for:lvar has appeared 11 times.
+Function call js: has appeared 0 times, and the most common alternative js:send has appeared 9 times.
+File 55: 5 / 37
+Function call locale=:or has appeared 0 times, and the most common alternative locale=:lvar has appeared 6 times.
+Function id has appeared 182 times and current_user has appeared 43 times, and they've appeared 0 times together.
+File 56: 2 / 20
+Current % recommended: 0.0253
+Function call redirect_back_or_default:or has appeared 0 times, and the most common alternative redirect_back_or_default:str has appeared 5 times.
+Function call I18n.t:str has appeared 0 times, and the most common alternative I18n.t:sym,hash has appeared 5 times.
+File 57: 2 / 26
+Function call respond_to:sym,sym,hash has appeared 0 times, and the most common alternative respond_to: has appeared 28 times.
+Function call before_filter:sym,sym,sym has appeared 0 times, and the most common alternative before_filter:sym has appeared 20 times.
+Function limit has appeared 75 times and desc has appeared 52 times, and they've appeared 0 times together.
+Function call desc:sym has appeared 0 times, and the most common alternative desc:str has appeared 17 times.
+Function call render:str,hash has appeared 0 times, and the most common alternative render: has appeared 70 times.
+Function call block:ivar has appeared 0 times, and the most common alternative block: has appeared 22 times.
+Function block has appeared 43 times and current_user has appeared 43 times, and they've appeared 0 times together.
+Function call render:sym,hash has appeared 0 times, and the most common alternative render: has appeared 70 times.
+File 58: 8 / 83
+Function call before_filter:sym,sym has appeared 0 times, and the most common alternative before_filter:sym has appeared 20 times.
+Function call respond_to:sym,hash has appeared 0 times, and the most common alternative respond_to: has appeared 28 times.
+Function call render:sym,hash has appeared 0 times, and the most common alternative render: has appeared 70 times.
+Function call js: has appeared 0 times, and the most common alternative js:send has appeared 9 times.
+Function call redirect_to:if has appeared 0 times, and the most common alternative redirect_to:send has appeared 34 times.
+File 59: 5 / 50
+
+File 60: 0 / 20
+Function call respond_to:sym,sym,hash has appeared 0 times, and the most common alternative respond_to: has appeared 28 times.
+Function call desc:sym has appeared 0 times, and the most common alternative desc:str has appeared 17 times.
+Function call url_for:hash has appeared 0 times, and the most common alternative url_for:lvar has appeared 11 times.
+Function call js: has appeared 0 times, and the most common alternative js:send has appeared 9 times.
+File 61: 4 / 29
+Function call before_filter:sym,sym,hash has appeared 0 times, and the most common alternative before_filter:sym has appeared 20 times.
+Function call respond_to:sym,sym,hash has appeared 0 times, and the most common alternative respond_to: has appeared 28 times.
+Function call respond_to:sym,hash has appeared 0 times, and the most common alternative respond_to: has appeared 28 times.
+Function call desc:sym has appeared 0 times, and the most common alternative desc:str has appeared 17 times.
+Function call render:sym,hash has appeared 0 times, and the most common alternative render: has appeared 70 times.
+Function flatten has appeared 374 times and push has appeared 576 times, and they've appeared 0 times together.
+File 62: 6 / 188
+Function call desc:sym has appeared 0 times, and the most common alternative desc:str has appeared 17 times.
+Function call reply: has appeared 0 times, and the most common alternative reply:lvar has appeared 5 times.
+File 63: 2 / 50
+Function to_time has appeared 26 times and Date.today has appeared 18 times, and they've appeared 0 times together.
+File 64: 1 / 7
+Current % recommended: 0.0298
+Function call before_filter:sym,sym has appeared 0 times, and the most common alternative before_filter:sym has appeared 20 times.
+File 65: 1 / 10
+
+File 66: 0 / 17
+
+File 67: 0 / 14
+
+File 68: 0 / 34
+
+File 69: 0 / 29
+Function call helper_method:sym,sym,sym,sym,sym,sym has appeared 0 times, and the most common alternative helper_method:sym has appeared 11 times.
+Function locale has appeared 12 times and current_user has appeared 43 times, and they've appeared 0 times together.
+Function call render:str,hash has appeared 0 times, and the most common alternative render: has appeared 70 times.
+Function call I18n.t:sym has appeared 0 times, and the most common alternative I18n.t:sym,hash has appeared 5 times.
+Function delete has appeared 1184 times and cookies has appeared 24 times, and they've appeared 0 times together.
+Function []= has appeared 4569 times and cookies has appeared 24 times, and they've appeared 0 times together.
+File 70: 6 / 159
+
+File 71: 0 / 10
+
+File 72: 0 / 9
+Current % recommended: 0.0294
+
+File 73: 0 / 11
+
+File 74: 0 / 12
+# of files:
+75
+# of lines:
+3965
+# of unlikely lines:
+116
+% recommended:
+0.029255989911727617
+
