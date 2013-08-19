@@ -107,6 +107,8 @@ class Codex
       }),
       combine,
       Proc.new do |db,keys,values| 
+        primatives = ["str","int","float","array","hash"]
+        all_prim = keys[:sig].all? { |x| primatives.include?(x) }
         query = db.where( :type => keys[:type], :func => keys[:func], :sig => keys[:sig]).first
         query_count = query.nil? ? 0 : query.count
         func = db.where(:type => keys[:type], :func => keys[:func], :sig => {:$ne => keys[:sig]}).sort(:count => -1).limit(1).first
@@ -123,7 +125,7 @@ class Codex
             "Function call #{keys[:func]}:#{keys[:sig].join(",")} has appeared #{query_count.to_s} times, " +
             alt_text,
           :unlikely => Proc.new do |ac=5,t=1024| 
-            query_count == 0 && alt_count >= ac || alt_count >= t * (query_count + 1)
+            all_prim && query_count == 0 && alt_count >= ac || alt_count >= t * (query_count + 1)
           end
         }
       end
