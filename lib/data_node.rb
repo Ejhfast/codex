@@ -6,7 +6,7 @@ load 'normalize_ast.rb'
 
 class DataNode
     
-  def initialize(db, agg_db, type, key_procs = {}, data_procs = {}, combine = {}, query = nil)
+  def initialize(db, agg_db, type, key_procs = {}, data_procs = {}, combine = {}, global_procs = {}, query = nil)
     @type = type
     @data = Hash.new { |h,k| h[k] = [] }
     @combine = combine
@@ -15,6 +15,8 @@ class DataNode
     @data_procs = data_procs
     @db, @agg_db = db, agg_db
     @query = query
+    @global_procs = global_procs
+    @globals = {}
   end
   
   def process_node(ast, file, project, &block)
@@ -35,6 +37,9 @@ class DataNode
     process_node(ast, file, project) do |keys, data_point|
       #join_keys = keys.map { |k,v| v }.join("-")
       @data[keys].push(data_point)
+      @global_procs.each do |name, proc|
+        @globals[name] = proc.call(keys,data_point,@globals[name])
+      end
       yield keys, @data[keys] if block
     end
     @data
@@ -82,7 +87,7 @@ class DataNode
   def collapse_data(data)
     combined = {}
     @combine.each do |k,proc|
-      combined[k] = proc.call(data)
+      combined[k] = proc.call(data,@globals)
     end
     combined
   end

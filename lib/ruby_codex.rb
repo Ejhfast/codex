@@ -36,6 +36,9 @@ class Codex
       :project => Proc.new { |node, f, p| p },
       :line => Proc.new { |node, f, p| node.loc ? node.loc.line : nil },
       :orig_code => Proc.new { |node, f, p| Unparser.unparse(node) rescue nil },
+      #:norm_code => Proc.new { |node, f, p| normal_node(node){|x,y| x} },
+      :terms => Proc.new { |node, f, p| Ripper.lex(Unparser.unparse(normal_node(node){|x,y| x})).select{|x|
+        [:on_kw, :on_const, :on_ident].include?(x[1]) }.map{ |x| x[2] } rescue nil },
     }
 
     combine = {
@@ -47,6 +50,25 @@ class Codex
           {:code => x[:orig_code], :file => x[:file], :line => x[:line]} 
         end.uniq },
       :count => Proc.new { |v| v.map { |x| x[:orig_code] }.count },
+      :raw_tf => Proc.new { |v, global|  v.first[:terms].map{|term| 1.0/Math.log(global[:raw_tcount][term])}.reduce(:+) || 0 },
+      :raw_tf_density => Proc.new { |v, global|
+        size = v.first[:terms].size
+        if size == 0
+          0
+        else
+          raw_tf = v.first[:terms].map{|term| 1.0/Math.log(global[:raw_tcount][term])}.reduce(:+) / size
+        end  },
+    }
+
+    global = {
+      :raw_tcount => Proc.new { |node, data_core, old|
+        old = Hash.new(1) unless old
+        data_core[:terms].each{ |term|
+          old[term] += 1 }
+        old
+      },
+    #  :file_tf => Proc.new { |node, data_core, old| },
+    #  :proj_tf => Proc.new { |node, data_core, old| },
     }
 
     @nodes[:block] = DataNode.new(
@@ -74,6 +96,7 @@ class Codex
       combine.merge({
         :args_list => Proc.new { |v| v.map { |x| x[:args] } }
       }),
+      global,
       Proc.new { |db,keys,vals|
         query = db.where(:type => keys[:type], :func => keys[:func], :ret_val => keys[:ret_val]).first
         query_count = query.nil? ? 0 : query.count
@@ -106,6 +129,7 @@ class Codex
         :func_info => Proc.new { |x| func_info.call(without_caller(x)) }
       }),
       combine,
+      global,
       Proc.new do |db,keys,values| 
         primatives = ["str","int","float","array","hash"]
         all_prim = keys[:sig].all? { |x| primatives.include?(x) }
@@ -146,6 +170,7 @@ class Codex
       }),
       data_core,
       combine,
+      global,
       Proc.new do |db,keys,data|
         query = db.where(keys).first
         query_count = query.nil? ? 0 : query.count
@@ -172,7 +197,8 @@ class Codex
         :func_info => func_info
       }),
       data_core,
-      combine
+      combine,
+      global
     )
 
     @nodes[:ident] = DataNode.new(
@@ -189,6 +215,7 @@ class Codex
       combine.merge({
         :ident_types => Proc.new { |v| v.group_by { |y| y[:ident_type] }.map_hash { |x| x.size } }
       }),
+      global,
       Proc.new { |db, keys, data|
         #pp keys
         primatives = ["str","int","float","array","hash"]
